@@ -1,0 +1,6 @@
+{
+  "url": "https://your-wordpress-site.com",
+  "username": "your-username",
+  "password": "your-application-password",
+  "note": "For password, use WordPress Application Password from Users > Profile > Application Passwords"
+}

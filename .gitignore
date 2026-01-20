@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+yarn.lock
+
+# Configuration (may contain sensitive data)
+wp-config.json
+
+# Downloaded content
+wp-content/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
