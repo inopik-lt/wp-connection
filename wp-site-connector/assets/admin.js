@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $('#regenerate-api-key').on('click', function(e) {
         e.preventDefault();
         
-        if (!confirm('Are you sure you want to regenerate the API key? The old key will stop working.')) {
+        if (!confirm(wpSiteConnector.i18n.confirmRegenerate)) {
             return;
         }
         
@@ -17,13 +17,13 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 if (response.success) {
                     $('input[name="wp_site_connector_api_key"]').val(response.data.api_key);
-                    alert('API key regenerated successfully!');
+                    alert(wpSiteConnector.i18n.regenerateSuccess);
                 } else {
-                    alert('Failed to regenerate API key.');
+                    alert(wpSiteConnector.i18n.regenerateFailed);
                 }
             },
             error: function() {
-                alert('An error occurred.');
+                alert(wpSiteConnector.i18n.ajaxError);
             }
         });
     });

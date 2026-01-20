@@ -292,7 +292,7 @@ class WP_Site_Connector_Admin {
         $table_name = $wpdb->prefix . 'site_connector_logs';
         $logs = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $table_name ORDER BY created_at DESC LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}site_connector_logs ORDER BY created_at DESC LIMIT %d",
                 50
             )
         );
@@ -356,6 +356,12 @@ class WP_Site_Connector_Admin {
             array(
                 'ajaxUrl' => admin_url( 'admin-ajax.php' ),
                 'nonce'   => wp_create_nonce( 'wp_site_connector_admin' ),
+                'i18n'    => array(
+                    'confirmRegenerate' => __( 'Are you sure you want to regenerate the API key? The old key will stop working.', 'wp-site-connector' ),
+                    'regenerateSuccess' => __( 'API key regenerated successfully!', 'wp-site-connector' ),
+                    'regenerateFailed'  => __( 'Failed to regenerate API key.', 'wp-site-connector' ),
+                    'ajaxError'         => __( 'An error occurred.', 'wp-site-connector' ),
+                ),
             )
         );
 

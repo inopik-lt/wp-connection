@@ -95,7 +95,7 @@ class WP_Site_Connector_API {
             return false;
         }
 
-        return hash_equals( $local_api_key, $api_key );
+        return hash_equals( $api_key, $local_api_key );
     }
 
     /**

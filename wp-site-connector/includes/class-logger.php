@@ -28,10 +28,8 @@ class WP_Site_Connector_Logger {
     public static function log( $event_type, $object_type, $object_id, $remote_url, $status, $message ) {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'site_connector_logs';
-
         $wpdb->insert(
-            $table_name,
+            $wpdb->prefix . 'site_connector_logs',
             array(
                 'event_type'  => sanitize_text_field( $event_type ),
                 'object_type' => sanitize_text_field( $object_type ),
@@ -53,11 +51,9 @@ class WP_Site_Connector_Logger {
     public static function get_logs( $limit = 50 ) {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'site_connector_logs';
-
         return $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $table_name ORDER BY created_at DESC LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}site_connector_logs ORDER BY created_at DESC LIMIT %d",
                 $limit
             )
         );
@@ -71,11 +67,9 @@ class WP_Site_Connector_Logger {
     public static function clear_old_logs( $days = 30 ) {
         global $wpdb;
 
-        $table_name = $wpdb->prefix . 'site_connector_logs';
-
         $wpdb->query(
             $wpdb->prepare(
-                "DELETE FROM $table_name WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
+                "DELETE FROM {$wpdb->prefix}site_connector_logs WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
                 $days
             )
         );
