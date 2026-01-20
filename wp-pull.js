@@ -30,7 +30,7 @@ program
       }
 
       // Merge CLI options with config file
-      const siteUrl = options.url || config.url;
+      let siteUrl = options.url || config.url;
       const username = options.username || config.username;
       const password = options.password || config.password;
       const contentType = options.type;
@@ -40,6 +40,9 @@ program
         console.error('Error: WordPress site URL is required. Use --url or add it to wp-config.json');
         process.exit(1);
       }
+
+      // Normalize siteUrl by removing trailing slashes
+      siteUrl = siteUrl.replace(/\/+$/, '');
 
       console.log(`Pulling ${contentType} from ${siteUrl}...`);
 
@@ -70,10 +73,36 @@ program
         console.log(`Fetching ${endpoint} from ${apiUrl}...`);
 
         try {
-          const response = await axios.get(apiUrl, { headers });
-          const items = response.data;
+          // Fetch all items with pagination
+          let allItems = [];
+          let page = 1;
+          let hasMore = true;
 
-          console.log(`Found ${items.length} ${endpoint}`);
+          while (hasMore) {
+            const response = await axios.get(apiUrl, { 
+              headers,
+              params: {
+                per_page: 100, // Maximum allowed by WordPress
+                page: page
+              }
+            });
+            const items = response.data;
+            
+            if (items.length === 0) {
+              hasMore = false;
+            } else {
+              allItems = allItems.concat(items);
+              page++;
+              
+              // Check if there are more pages
+              const totalPages = response.headers['x-wp-totalpages'];
+              if (totalPages && page > parseInt(totalPages)) {
+                hasMore = false;
+              }
+            }
+          }
+
+          console.log(`Found ${allItems.length} ${endpoint}`);
 
           // Save each item to a file
           const typeDir = path.join(outputDir, endpoint);
@@ -81,12 +110,18 @@ program
             fs.mkdirSync(typeDir, { recursive: true });
           }
 
-          items.forEach((item) => {
-            const filename = `${item.id}-${item.slug}.json`;
+          // Use async file operations
+          const promises = allItems.map(async (item) => {
+            // Create a safe filename with fallback for missing slug
+            const slug = item.slug || `item-${item.id}`;
+            const filename = `${item.id}-${slug}.json`;
             const filepath = path.join(typeDir, filename);
-            fs.writeFileSync(filepath, JSON.stringify(item, null, 2));
+            
+            await fs.promises.writeFile(filepath, JSON.stringify(item, null, 2));
             console.log(`  Saved: ${filename}`);
           });
+
+          await Promise.all(promises);
         } catch (error) {
           if (error.response) {
             console.error(`  Error fetching ${endpoint}: ${error.response.status} ${error.response.statusText}`);
