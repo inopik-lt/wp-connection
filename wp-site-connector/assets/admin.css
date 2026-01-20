@@ -1,0 +1,46 @@
+.wp-site-connector-settings {
+    max-width: 800px;
+}
+
+.wp-site-connector-settings input[type="text"],
+.wp-site-connector-settings input[type="url"] {
+    width: 100%;
+    max-width: 500px;
+}
+
+.wp-site-connector-settings .description {
+    font-size: 13px;
+    color: #646970;
+    margin-top: 5px;
+}
+
+.wp-site-connector-settings h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.status-success {
+    color: #46b450;
+    font-weight: 600;
+}
+
+.status-failed {
+    color: #dc3232;
+    font-weight: 600;
+}
+
+.wp-list-table td {
+    vertical-align: middle;
+}
+
+.wp-list-table .status-success::before {
+    content: '✓ ';
+}
+
+.wp-list-table .status-failed::before {
+    content: '✗ ';
+}
+
+#regenerate-api-key {
+    margin-left: 10px;
+}
